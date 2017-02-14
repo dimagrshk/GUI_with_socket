@@ -21,10 +21,9 @@ class Example(QMainWindow):
 
         self.fileName, _  = QFileDialog.getOpenFileName(self, 'Open file', '/pictures/pictures/ ')
         sock = socket.socket()
-        sock.connect(('192.168.43.168', 9090))
-        type(self.fileName)
-        inp_d = bytes(self.fileName, "utf-8")
-        sock.send(inp_d)
+        sock.connect(('77.47.198.64', 9090))
+        bytes = open(self.fileName).read()
+        sock.send(bytes)
         sock.close()
         print (self.fileName)
 
