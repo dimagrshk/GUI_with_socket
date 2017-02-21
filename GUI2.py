@@ -2,7 +2,8 @@ import sys
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
     QAction, QMessageBox, QFileDialog, QApplication, QPushButton, QInputDialog, QLineEdit)
 import socket
-
+import msgpack
+import os
 class Example(QMainWindow):
 
     def __init__(self):
@@ -11,6 +12,7 @@ class Example(QMainWindow):
 
 
     def initUI(self):
+        self.setGeometry(300, 300, 300, 220)
         self.fileName=""
         self.text=""
         btn1 = QPushButton("Press", self)
@@ -20,10 +22,22 @@ class Example(QMainWindow):
     def onBtn1(self):
 
         self.fileName, _  = QFileDialog.getOpenFileName(self, 'Open file', '/pictures/pictures/ ')
+        #######
         sock = socket.socket()
-        sock.connect(('77.47.198.64', 9090))
-        bytes = open(self.fileName).read()
-        sock.send(bytes)
+        sock.connect(('10.0.0.130', 9090))
+        ######## PICTURE
+        with open(self.fileName, "rb") as f:
+            btf = f.read()
+        #### TIME
+        time = 300
+        #### COOORD
+        x = 100
+        y = 100
+        ### DICT
+        dictry = {'Image': btf, 'Time': time, 'x': x, 'y': y}
+        dumped_dict = msgpack.packb(dictry)
+        #send_dict = bytes(dumped_dict)
+        sock.sendall(dumped_dict)
         sock.close()
         print (self.fileName)
 
